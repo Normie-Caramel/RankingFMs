@@ -18,7 +18,7 @@ def train(args):
 
     # Load data
     events, users, items = load_data(args.data_path)
-    train_df, valid_df = train_test_split(events, test_size=0.2, random_state=args.seed)
+    train_df, valid_df = train_test_split(events, test_size=args.split, random_state=args.seed)
     train_mat = get_csr_mat(train_df, users.shape[0], items.shape[0])
     valid_mat = get_csr_mat(events, users.shape[0], items.shape[0])
     train_data = BPRData(train_df, train_mat, 
@@ -101,6 +101,7 @@ if __name__ == '__main__':
     parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=512)
+    parser.add_argument('--split', type=float, default=0.2)
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--weight_decay', type=float, default=1e-6)
     parser.add_argument('--embed_dim', type=int, default=32)
