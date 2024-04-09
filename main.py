@@ -17,11 +17,11 @@ def train(args):
     np.random.seed(args.seed)
 
     # Load data
-    events, users, items = load_data(args.data_path)
+    events, users, items = load_data(args.data_path, miss_ratio=args.miss_ratio)
     train_df, valid_df = train_test_split(events, test_size=args.split, random_state=args.seed)
     train_mat = get_csr_mat(train_df, users.shape[0], items.shape[0])
     valid_mat = get_csr_mat(events, users.shape[0], items.shape[0])
-    train_data = BPRData(train_df, train_mat, 
+    train_data = BPRData(train_df, train_mat,
                             user_features=users if args.user_features else None, 
                             item_features=items if args.item_features else None, 
                              num_neg=args.num_neg, device=args.device, add_weight=True)
@@ -111,6 +111,7 @@ if __name__ == '__main__':
     parser.add_argument('--user_features', type=bool, default=False)
     parser.add_argument('--item_features', type=bool, default=False)
     parser.add_argument('--verbose', type=bool, default=False)
+    parser.add_argument('--miss_ratio', type=float, default=0.0)
     args = parser.parse_args()
     if args.mode == 'train':
         train(args)

@@ -4,7 +4,7 @@ import scipy.sparse as sp
 import torch
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
-def load_data(root):
+def load_data(root, miss_ratio=0):
     events = pd.read_csv(root + 'events_mini.csv')
     users = pd.read_csv(root + 'users_mini.csv')
     items = pd.read_csv(root + 'tracks_mini.csv')
@@ -12,6 +12,12 @@ def load_data(root):
     events.drop(columns=['album_id'], inplace=True)
     users.drop(columns=['creation_time'], inplace=True)
     events = events.groupby(['user_id', 'track_id']).sum().reset_index()
+
+    if miss_ratio > 0:
+        mask_user = np.random.choice([True, False], size=users.shape, p=[miss_ratio, 1 - miss_ratio])
+        mask_item = np.random.choice([True, False], size=items.shape, p=[miss_ratio, 1 - miss_ratio])
+        users = users.where(mask_user, 'unknown')
+        items = items.where(mask_item, 0)
 
     index_to_user = pd.Series(np.sort(np.unique(events['user_id'])))
     index_to_item = pd.Series(np.sort(np.unique(events['track_id'])))
