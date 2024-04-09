@@ -117,23 +117,11 @@ class DeepFM(nn.Module):
         self.dnn_weight = dnn_weight
             
         self.linear_sparse = nn.ModuleList([nn.Embedding(voc_size, 1) for voc_size in self.sparse_dims])
-        # self.order2_sparse = nn.ModuleList([nn.Embedding(voc_size, embed_dim) for voc_size in self.sparse_dims])
-        self.order2_sparse = nn.ModuleList([
-                nn.Sequential(
-                nn.Embedding(voc_size, units),
-                nn.ReLU(),
-                nn.Dropout(dropout),
-                nn.Linear(units, embed_dim)) for voc_size in self.sparse_dims])
+        self.order2_sparse = nn.ModuleList([nn.Embedding(voc_size, embed_dim) for voc_size in self.sparse_dims])
 
         if self.dense_dim is not None:
             self.linear_dense = nn.Linear(self.dense_dim, 1)
-            # self.order2_dense = nn.ModuleList([nn.Linear(1, embed_dim) for _ in range(self.dense_dim)])
-            self.order2_dense = nn.ModuleList([
-                nn.Sequential(
-                nn.Linear(1, units),
-                nn.ReLU(),
-                nn.Dropout(dropout),
-                nn.Linear(units, embed_dim)) for _ in range(self.dense_dim)])
+            self.order2_dense = nn.ModuleList([nn.Linear(1, embed_dim) for _ in range(self.dense_dim)])
 
         self.deep_input_dim = len(self.sparse_dims) * embed_dim if self.dense_dim is None \
             else (len(self.sparse_dims) + self.dense_dim) * embed_dim
