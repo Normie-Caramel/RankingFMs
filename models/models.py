@@ -50,8 +50,6 @@ class FM(nn.Module):
             order2_dense = torch.cat(order2_dense, dim=1)
             order2_part = torch.cat([order2_part, order2_dense], dim=1)
 
-        # order2_part = self.batch_norm(order2_part)
-
         square_of_sum = torch.pow(torch.sum(order2_part, dim=1), 2)
         sum_of_square = torch.sum(torch.pow(order2_part, 2), dim=1)
 
