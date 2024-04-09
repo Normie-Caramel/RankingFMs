@@ -53,7 +53,7 @@ def train(args):
         model.train()
         train_loss = 0
         train_data.neg_sample()
-        progress = tqdm(train_loader, desc=f'Epoch {epoch + 1}', disable=False)
+        progress = tqdm(train_loader, desc=f'Epoch {epoch + 1}', disable=not args.verbose)
         for x_pos_sparse, x_pos_dense, x_neg_sparse, x_neg_dense, weight in progress:
             optimizer.zero_grad()
             pos_score = model(x_pos_sparse, x_pos_dense)
@@ -109,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, default='fm')
     parser.add_argument('--user_features', type=bool, default=False)
     parser.add_argument('--item_features', type=bool, default=False)
+    parser.add_argument('--verbose', type=bool, default=False)
     args = parser.parse_args()
     if args.mode == 'train':
         train(args)
