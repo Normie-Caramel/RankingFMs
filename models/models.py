@@ -112,7 +112,7 @@ class FMV(nn.Module):
     
 class DeepFM(nn.Module):
     def __init__(self, sparse_dims, dense_dim, embed_dim=8, hidden_units=[128, 64], dnn_weight = 0.5, dropout=0.2):
-        super(FM, self).__init__()
+        super(DeepFM, self).__init__()
         self.sparse_dims = sparse_dims
         self.dense_dim = dense_dim
         self.embed_dim = embed_dim
@@ -155,6 +155,7 @@ class DeepFM(nn.Module):
             order2_part = torch.cat([order2_part, order2_dense], dim=1)
 
         deep_part = torch.flatten(order2_part, start_dim=1)
+        deep_part = self.deep(deep_part)
         deep_part = self.fc(deep_part)
 
         square_of_sum = torch.pow(torch.sum(order2_part, dim=1), 2)
