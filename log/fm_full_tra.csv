@@ -1,0 +1,2 @@
+train_loss,valid_loss,train_precision,valid_precision,roc_auc_train,roc_auc_valid
+5.2988,3.4167,0.0572,0.0154,0.5712,0.5358
